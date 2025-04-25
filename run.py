@@ -13,9 +13,9 @@ print("开始处理:"+root_path)
 #win_size=args.seq_len
 win_size=10
 
-read_coarse_grained_data(root_path, win_size//2, win_size//2, flag="train")
-read_fine_grained_data(root_path, win_size//2, win_size//2, flag="train")
-read_coarse_grained_data(root_path, win_size//2, win_size//2, flag="test")
+#read_coarse_grained_data(root_path, win_size//2, win_size//2, flag="train")
+#read_fine_grained_data(root_path, win_size//2, win_size//2, flag="train")
+#read_coarse_grained_data(root_path, win_size//2, win_size//2, flag="test")
 read_fine_grained_data(root_path, win_size//2, win_size//2, flag="test")
 #######################异常注入可视化########################
 abnormal_label_list=read_abnormal_label(os.path.join(root_path,"raw_data/abnormal_label/abnormal_process.csv"))

@@ -157,7 +157,7 @@ def write_abnormal_to_csv(abnormal_value_df, raw_data_dir,test_abnormal_data_dir
             - test_abnormal_data_dir_path: 生成的异常测试数据保存目录
             - dataset_parameter: 数据集参数（如电压阈值）
     '''
-    print("----执行:将异常数据写入原始数据文件，生成包含异常信号的测试数据集。----")
+    print("----执行write_abnormal_to_csv:将异常数据写入原始数据文件，生成包含异常信号的测试数据集。----")
     all_file_path = get_all_file_list(raw_data_dir)
     for file_path in all_file_path:# 遍历每个原始数据文件
         # 生成保存路径（保留文件名，替换目录）
@@ -167,7 +167,6 @@ def write_abnormal_to_csv(abnormal_value_df, raw_data_dir,test_abnormal_data_dir
         df = pd.read_csv(file_path)# 读取原始数据文件
         print("    读取原始数据文件："+str(file_path))
         fill_missing_time_rows(df)
-        print(df)
         df['date'] = pd.to_datetime(df['date'])# 转换日期列为datetime类型
         mintime = df.iloc[0, 0]  # 获取最小时间
         maxtime=df.iloc[-1,0]#获取最大时间（主要是给后面注入异常提供参考）
@@ -472,6 +471,7 @@ def normal_value(signal_df, signal_happen_time_df, high_low_perc=[0.95, 0.05]):
 
 def generate_emi_abnormity(abnormal_num,test_signal_record_and_feature_df,start_and_end_date,df_cols, normal_time_values,normal_power_values, normal_bandwidth_values,normal_noise_values,dataset_parameter):
     start_date, end_date=start_and_end_date[0],start_and_end_date[1]
+    print(f"generate_emi_abnormity 时间范围:{start_date}--{end_date}")
     time_low, time_high= normal_time_values[0], normal_time_values[2]
     bandwidth_low, bandwidth_median,bandwidth_high=normal_bandwidth_values[0],normal_bandwidth_values[1],normal_bandwidth_values[2]
     normal_power_low,normal_power_median,normal_power_high,normal_power_mean=normal_power_values[0],normal_power_values[1],normal_power_values[2],normal_power_values[3]

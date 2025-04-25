@@ -837,17 +837,19 @@ def generate_signal_abnormal_data(root_path, dataset_parameter):
     # 6. 确定时间范围
     # 获取测试数据的起止时间，并调整起始时间（例如从第二天开始）
     start_date, end_date = get_earlist_and_lastest_time(test_raw_data_dir_path)
+    print(f"获取测试数据的起止时间:{start_date},{end_date}")
     # 转换为 datetime 对象
     try:
         datetime_obj = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
     except ValueError:
         datetime_obj = datetime.strptime(start_date, "%Y/%m/%d %H:%M:%S")
+    '''???为什么要增加一天?
     # 增加一天
     new_datetime_obj = datetime_obj + timedelta(days=1)
     # 转回字符串
     new_datetime_obj= new_datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
     if(new_datetime_obj<end_date):
-        start_date=new_datetime_obj
+        start_date=new_datetime_obj'''
 
     # 7. 获取频谱列名（频率点）
     # 例如：["7.01", "7.02", ..., "7.50"]
@@ -864,7 +866,7 @@ def generate_signal_abnormal_data(root_path, dataset_parameter):
     abnormal_transmission_df = generate_transmission_abnormity(abnormal_num, test_signal_record_and_feature_df,
                                                                (start_date, end_date), df_cols, normal_time_values,
                                                                normal_power_values, normal_bandwidth_values,normal_noise_values,dataset_parameter)
-    print("abnormal_transmission_df前几行:")
+    print("       abnormal_transmission_df前几行:")
     pd.set_option('display.max_columns', None)
     print(abnormal_transmission_df.head(3))
     # abnormal_df = abnormal_transmission_df.head(1)
@@ -875,7 +877,7 @@ def generate_signal_abnormal_data(root_path, dataset_parameter):
     print("准备生成电磁干扰异常..")
     abnormal_emi_df = generate_emi_abnormity(abnormal_num, test_signal_record_and_feature_df, (start_date, end_date),
                                              df_cols, normal_time_values, normal_power_values, normal_bandwidth_values,normal_noise_values,dataset_parameter)
-    print("abnormal_emi_df前几行:")
+    print("       abnormal_emi_df前几行:")
     pd.set_option('display.max_columns', None)
     print(abnormal_emi_df.head(3))
     # 10. 合并异常数据
@@ -900,7 +902,11 @@ def generate_signal_abnormal_data(root_path, dataset_parameter):
 
     # 12. 生成行为异常
     # 模拟信号行为的异常（如非预期的时间聚集）
+    print("生成行为异常")
     abnormal_behavior_df = generate_behavior_abnormity_new(abnormal_num,test_signal_record_and_feature_df,(start_date,end_date),df_cols,dataset_parameter)
+    print("       abnormal_behavior_df前几行:")
+    pd.set_option('display.max_columns', None)
+    print(abnormal_behavior_df.head(3))
 
     # 13. 合并所有异常数据
     print("合并所有异常数据.")
@@ -909,9 +915,8 @@ def generate_signal_abnormal_data(root_path, dataset_parameter):
 
     # 14. 保存异常处理记录
     os.makedirs(os.path.dirname(abnormal_process_file_path), exist_ok=True)
-
     abnormal_df.to_csv(abnormal_process_file_path, index=False)
-    print("在原始数据上添加异常成分,并记录异常标签,保存abnormal_df:"+str(abnormal_process_file_path))
+    print("在原始数据上添加异常成分,并记录异常标签,保存abnormal_process_file:"+str(abnormal_process_file_path))
     #abnormal_df是包含异常数据的dataframe(到底是怎么来的)
 
     # 15. 生成最终异常标签
@@ -1303,6 +1308,7 @@ def process_test_fine_data(root_path, left_win_size, right_win_size, dataset_par
 
     for index, row in fine_abnormal_label_df.iterrows():
         select_start_date, select_end_date = row['start_time'], row['end_time']
+        print(f'{select_start_date},,,{select_end_date}')
         if (select_end_date < test_abnormal_data_df['date'].iloc[0]):
             continue
         if (select_start_date > test_abnormal_data_df['date'].iloc[-1]):
@@ -1313,7 +1319,7 @@ def process_test_fine_data(root_path, left_win_size, right_win_size, dataset_par
             label_mask = mask1
         else:
             label_mask = label_mask | mask1
-
+    print(label_mask)
     test_abnormal_data_df['label'] = label_mask
 
     os.makedirs(os.path.dirname(os.path.join(root_path, test_fine_grained_data_file)), exist_ok=True)
